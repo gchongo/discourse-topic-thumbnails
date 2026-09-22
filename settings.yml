@@ -96,3 +96,14 @@ list_thumbnail_size:
   choices:
     - 200
     - 400
+
+bilibili_remote_thumbnail_fallback:
+  default: true
+  client: true
+
+bilibili_thumbnail_urls:
+  type: list
+  default: ""
+  client: true
+  description:
+    en: "Optional Bilibili cover overrides. Pairs of BV_ID|image_url separated by | (e.g. BV1xx|https://example.com/cover.jpg|BV2yy|https://...)."

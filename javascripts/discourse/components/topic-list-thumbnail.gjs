@@ -1,15 +1,37 @@
 import Component from "@glimmer/component";
+import { tracked } from "@glimmer/tracking";
 import { service } from "@ember/service";
 import coldAgeClass from "discourse/helpers/cold-age-class";
 import concatClass from "discourse/helpers/concat-class";
 import dIcon from "discourse/helpers/d-icon";
 import formatDate from "discourse/helpers/format-date";
 import { getURLWithCDN } from "discourse/lib/get-url";
+import { loadBilibiliThumbnailForTopic } from "../lib/bilibili-thumbnail";
 
 export default class TopicListThumbnail extends Component {
   @service topicThumbnails;
 
+  @tracked externalThumbnailUrl = null;
+  @tracked bilibiliLoadAttempted = false;
+
   responsiveRatios = [1, 1.5, 2];
+
+  constructor() {
+    super(...arguments);
+    this.loadExternalThumbnail();
+  }
+
+  async loadExternalThumbnail() {
+    if (this.hasLocalThumbnail || this.bilibiliLoadAttempted) {
+      return;
+    }
+
+    this.bilibiliLoadAttempted = true;
+    const url = await loadBilibiliThumbnailForTopic(this.topic);
+    if (url) {
+      this.externalThumbnailUrl = url;
+    }
+  }
 
   // Make sure to update about.json thumbnail sizes if you change these variables
   get displayWidth() {
@@ -22,8 +44,12 @@ export default class TopicListThumbnail extends Component {
     return this.args.topic;
   }
 
+  get hasLocalThumbnail() {
+    return (this.topic.thumbnails?.length || 0) > 0;
+  }
+
   get hasThumbnail() {
-    return !!this.topic.thumbnails;
+    return this.hasLocalThumbnail || !!this.externalThumbnailUrl;
   }
 
   get srcSet() {
@@ -51,18 +77,25 @@ export default class TopicListThumbnail extends Component {
   }
 
   get width() {
-    return this.original.width;
+    return this.original?.width || 400;
   }
 
   get isLandscape() {
+    if (this.externalThumbnailUrl) {
+      return true;
+    }
     return this.original.width >= this.original.height;
   }
 
   get height() {
-    return this.original.height;
+    return this.original?.height || 225;
   }
 
   get fallbackSrc() {
+    if (this.externalThumbnailUrl) {
+      return this.externalThumbnailUrl;
+    }
+
     const largeEnough = this.topic.thumbnails.filter((t) => {
       if (!t.url) {
         return false;
@@ -84,7 +117,6 @@ export default class TopicListThumbnail extends Component {
       : this.topic.get("lastUnreadUrl");
   }
 
-  // Prefer last poster, then any featured/poster user (grid avatar)
   get gridAvatarUser() {
     const topic = this.topic;
     return (
@@ -123,6 +155,9 @@ export default class TopicListThumbnail extends Component {
       if (this.isLandscape) {
         classes.push("landscape");
       }
+      if (this.externalThumbnailUrl) {
+        classes.push("external-thumbnail");
+      }
     } else {
       classes.push("no-thumbnail");
     }
@@ -132,7 +167,7 @@ export default class TopicListThumbnail extends Component {
   <template>
     <div class={{this.thumbnailClass}}>
       <a href={{this.url}} role="img" aria-label={{this.topic.title}}>
-        {{#if this.hasThumbnail}}
+        {{#if this.hasLocalThumbnail}}
           <img
             class="background-thumbnail"
             src={{this.fallbackSrc}}
@@ -148,6 +183,19 @@ export default class TopicListThumbnail extends Component {
             srcset={{this.srcSet}}
             width={{this.width}}
             height={{this.height}}
+            loading="lazy"
+            alt=""
+          />
+        {{else if this.externalThumbnailUrl}}
+          <img
+            class="background-thumbnail"
+            src={{this.externalThumbnailUrl}}
+            loading="lazy"
+            alt=""
+          />
+          <img
+            class="main-thumbnail"
+            src={{this.externalThumbnailUrl}}
             loading="lazy"
             alt=""
           />
