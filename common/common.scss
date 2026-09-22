@@ -467,15 +467,22 @@
     display: grid !important;
     grid-template-areas:
       "image"
-      "title" !important;
+      "title"
+      "meta" !important;
     grid-template-columns: 1fr !important;
-    grid-template-rows: auto auto !important;
+    grid-template-rows: auto auto auto !important;
     height: auto !important;
     min-height: 0 !important;
     gap: 0 !important;
     padding: 0 !important;
     overflow: hidden;
     border-radius: 8px;
+  }
+
+  // Let thumbnail / stats / avatar participate in the card grid.
+  > td:has(.topic-list-thumbnail),
+  > .topic-list-data:has(.topic-list-thumbnail) {
+    display: contents !important;
   }
 
   .topic-list-thumbnail {
@@ -527,7 +534,7 @@
     max-width: none !important;
     min-width: 0 !important;
     margin: 0 !important;
-    padding: 10px 44px 10px 12px !important;
+    padding: 10px 12px 4px !important;
     background: transparent !important;
   }
 
@@ -544,8 +551,41 @@
     align-items: center;
     flex-wrap: nowrap;
     gap: 4px 8px;
-    min-height: 24px;
+    min-height: 0;
     overflow: hidden;
+  }
+
+  // Comments / views / likes (desktop card meta row)
+  .topic-thumbnails-grid__stats {
+    grid-area: meta;
+    display: flex !important;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 12px;
+    min-width: 0;
+    padding: 4px 44px 10px 12px;
+    color: var(--primary-medium);
+    font-size: 13px;
+    line-height: 1;
+    box-sizing: border-box;
+  }
+
+  .topic-thumbnails-grid__stat {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+
+    .d-icon {
+      width: 14px;
+      height: 14px;
+      color: var(--primary-medium);
+    }
+
+    .number {
+      color: var(--primary-medium);
+    }
   }
 
   // Avatar injected by topic-list-thumbnail.gjs
