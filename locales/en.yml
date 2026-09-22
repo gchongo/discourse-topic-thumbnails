@@ -18,5 +18,4 @@ en:
       placeholder_icon: Icon to display on topics without thumbnail images
       mobile_thumbnails: Enable thumbnails on mobile devices
       list_thumbnail_size: Base size for thumbnails in the 'list' view
-      bilibili_remote_thumbnail_fallback: When a topic has no local thumbnail, try Discourse onebox / first-post images (no direct Bilibili API; that needs a plugin).
-      bilibili_thumbnail_urls: Manual Bilibili cover mappings as BV_ID|image_url pairs separated by |
+
