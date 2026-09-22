@@ -454,56 +454,102 @@
   }
 }
 
-// grid only: title row 1; tags (left) + avatar (right) on row 2
+// grid only — beat flat-theme topic-list rules; title / tags+avatar card layout
+.desktop-view .list-container .topic-list.topic-thumbnails-grid,
 .topic-list.topic-thumbnails-grid {
-  .topic-list-item {
-    position: relative;
-    display: grid;
-    grid-template-areas:
-      "image"
-      "meta";
-    grid-template-columns: 1fr;
-    grid-template-rows: 1fr auto;
-    height: auto;
-    min-height: 250px;
+  .topic-list-body {
+    column-gap: 16px !important;
+    row-gap: 16px !important;
+  }
+
+  .topic-list-item,
+  .topic-list-item.selected {
+    position: relative !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    grid-template-columns: none !important;
+    grid-template-rows: none !important;
+    grid-template-areas: none !important;
+    gap: 0 !important;
+    height: auto !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden;
+    border: 1px solid var(--primary-low) !important;
+    border-radius: 8px;
+    background: var(--primary-low) !important;
+    box-shadow: none !important;
+
+    &:hover {
+      background: var(--primary-low) !important;
+    }
+
+    > td,
+    > .topic-list-data {
+      background: transparent !important;
+      border: 0 !important;
+      padding: 0 !important;
+      min-width: 0;
+    }
+  }
+
+  // thumbnail cell on top
+  .topic-list-item > td:has(.topic-list-thumbnail),
+  .topic-list-item > .topic-list-data:has(.topic-list-thumbnail) {
+    order: 1;
+    display: block !important;
+    width: 100% !important;
   }
 
   .topic-list-thumbnail {
-    grid-area: image;
-    grid-column: 1;
-    grid-row: 1;
-    aspect-ratio: 16 / 10;
-    height: auto;
+    position: relative !important;
+    float: none !important;
+    grid-area: unset !important;
+    grid-column: unset !important;
+    grid-row: unset !important;
+    width: 100% !important;
+    height: auto !important;
     min-height: 140px;
+    aspect-ratio: 16 / 10;
+    margin: 0 !important;
   }
 
-  // hide category + activity/date (beat flat-theme !important)
+  // hide category / stats / date
   .badge-category__wrapper,
   .badge-category,
   .num.activity,
   td.activity,
-  .topic-list-data.activity {
+  .topic-list-data.activity,
+  .posts-map,
+  .num.posts-map,
+  .views,
+  .num.views,
+  .topic-excerpt,
+  .topic-thumbnail-likes {
     display: none !important;
-    visibility: hidden !important;
-    width: 0 !important;
-    height: 0 !important;
-    overflow: hidden !important;
-    padding: 0 !important;
-    margin: 0 !important;
   }
 
-  .main-link {
-    grid-area: meta;
-    grid-column: 1;
-    grid-row: 2;
-    display: flex;
+  .main-link,
+  td.main-link,
+  .topic-list-data.main-link {
+    order: 2;
+    position: relative !important;
+    z-index: 1;
+    grid-area: unset !important;
+    grid-column: unset !important;
+    grid-row: unset !important;
+    display: flex !important;
     flex-direction: column;
     justify-content: center;
     gap: 6px;
-    width: 100%;
+    width: 100% !important;
+    max-width: none !important;
     min-width: 0;
-    padding: 10px 44px 10px 12px; // right room for avatar
-    background-color: rgb(var(--primary-low-rgb), 0.85);
+    margin: 0 !important;
+    padding: 10px 44px 10px 12px !important;
+    background: transparent !important;
   }
 
   .link-top-line {
@@ -527,34 +573,37 @@
   .posters,
   td.posters,
   .topic-list-data.posters {
+    order: 3;
+    position: absolute !important;
+    right: 12px !important;
+    bottom: 12px !important;
+    top: auto !important;
+    left: auto !important;
+    z-index: 5 !important;
     grid-area: unset !important;
     grid-column: unset !important;
     grid-row: unset !important;
-    position: absolute !important;
-    right: 12px;
-    bottom: 10px;
-    z-index: 3;
-    display: flex !important;
-    align-items: center;
-    justify-content: flex-end;
-    width: auto !important;
-    max-width: none !important;
-    height: auto !important;
-    min-height: 0 !important;
+    display: block !important;
+    visibility: visible !important;
+    width: 24px !important;
+    max-width: 24px !important;
+    min-width: 24px !important;
+    height: 24px !important;
     padding: 0 !important;
     margin: 0 !important;
     background: transparent !important;
-    font-size: 0 !important; // hide any nickname text
+    overflow: visible !important;
+    font-size: 0 !important;
     line-height: 0 !important;
 
-    a,
-    a:first-child,
-    a:first-of-type {
-      display: block !important;
+    a {
+      display: none !important;
+      margin: 0 !important;
+      padding: 0 !important;
       width: 24px !important;
       height: 24px !important;
-      margin: 0 !important;
       overflow: hidden;
+      border: 0 !important;
       font-size: 0 !important;
       line-height: 0 !important;
       color: transparent !important;
@@ -566,9 +615,8 @@
       }
     }
 
-    a:not(:first-child),
-    a:not(:first-of-type) {
-      display: none !important;
+    > a:first-child {
+      display: block !important;
     }
 
     .avatar,
@@ -576,7 +624,11 @@
       display: block !important;
       width: 24px !important;
       height: 24px !important;
-      border-radius: 50%;
+      max-width: none !important;
+      border-radius: 50% !important;
+      border: 0 !important;
+      box-shadow: none !important;
+      object-fit: cover;
     }
   }
 }
