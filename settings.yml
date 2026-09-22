@@ -1,5 +1,5 @@
 default_thumbnail_mode:
-  default: grid
+  default: none
   type: enum
   choices:
     - minimal-grid
