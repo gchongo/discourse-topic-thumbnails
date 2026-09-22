@@ -454,6 +454,115 @@
   }
 }
 
+// Card layout for grid mode only (do not affect normal Latest list).
+.desktop-view .list-container .topic-list.topic-thumbnails-grid,
+.topic-list.topic-thumbnails-grid {
+  .topic-list-body {
+    column-gap: 16px;
+    row-gap: 16px;
+  }
+
+  .topic-list-item {
+    position: relative !important;
+    display: grid !important;
+    grid-template-areas:
+      "image"
+      "title" !important;
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto auto !important;
+    height: auto !important;
+    min-height: 0 !important;
+    gap: 0 !important;
+    padding: 0 !important;
+    overflow: hidden;
+    border-radius: 8px;
+  }
+
+  .topic-list-thumbnail {
+    grid-area: image !important;
+    position: relative !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 140px;
+    aspect-ratio: 16 / 10;
+    float: none !important;
+    margin: 0 !important;
+  }
+
+  // Hide stock meta that makes the card messy
+  .badge-category__wrapper,
+  .badge-category,
+  .num.activity,
+  td.activity,
+  .topic-list-data.activity,
+  .posts-map,
+  .num.posts-map,
+  .views,
+  .num.views,
+  .posters,
+  td.posters,
+  .topic-list-data.posters {
+    display: none !important;
+  }
+
+  .main-link,
+  td.main-link,
+  .topic-list-data.main-link {
+    grid-area: title !important;
+    grid-column: 1 !important;
+    grid-row: auto !important;
+    position: relative !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 6px;
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 10px 44px 10px 12px !important;
+    background: transparent !important;
+  }
+
+  .link-top-line {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    line-height: 1.35;
+  }
+
+  .link-bottom-line {
+    display: flex !important;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 4px 8px;
+    min-height: 24px;
+    overflow: hidden;
+  }
+
+  // Avatar injected by topic-list-thumbnail.gjs
+  .topic-thumbnails-grid__avatar {
+    position: absolute !important;
+    right: 12px;
+    bottom: 10px;
+    z-index: 5;
+    display: block !important;
+    width: 24px;
+    height: 24px;
+    overflow: hidden;
+    border-radius: 50%;
+    line-height: 0;
+
+    .avatar,
+    img {
+      width: 24px !important;
+      height: 24px !important;
+      border-radius: 50% !important;
+      object-fit: cover;
+    }
+  }
+}
+
 // Hide OP covers marked with |thumbnail in the post body (still used as topic card image).
 .cooked,
 .d-editor-preview {
