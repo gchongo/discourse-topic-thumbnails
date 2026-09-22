@@ -1,6 +1,8 @@
 import { readOnly } from "@ember/object/computed";
 import { service } from "@ember/service";
 import { apiInitializer } from "discourse/lib/api";
+import DUserLink from "discourse/ui-kit/d-user-link";
+import dAvatar from "discourse/ui-kit/helpers/d-avatar";
 import TopicListThumbnail from "../components/topic-list-thumbnail";
 
 export default apiInitializer((api) => {
@@ -37,6 +39,25 @@ export default apiInitializer((api) => {
     <template>
       {{#if ttService.displayList}}
         <TopicListThumbnail @topic={{@outletArgs.topic}} />
+      {{/if}}
+    </template>
+  );
+
+  // Grid cards: render avatar inside main-link (reliable) instead of posters column
+  api.renderInOutlet(
+    "topic-list-main-link-bottom",
+    <template>
+      {{#if ttService.displayGrid}}
+        {{#if @outletArgs.topic.lastPosterUser}}
+          <div class="topic-thumbnails-grid__avatar">
+            <DUserLink
+              @username={{@outletArgs.topic.lastPosterUser.username}}
+              @href={{@outletArgs.topic.lastPosterUser.path}}
+            >
+              {{dAvatar @outletArgs.topic.lastPosterUser imageSize="small"}}
+            </DUserLink>
+          </div>
+        {{/if}}
       {{/if}}
     </template>
   );
