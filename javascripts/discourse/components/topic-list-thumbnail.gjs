@@ -191,12 +191,14 @@ export default class TopicListThumbnail extends Component {
             class="background-thumbnail"
             src={{this.externalThumbnailUrl}}
             loading="lazy"
+            referrerpolicy="no-referrer"
             alt=""
           />
           <img
             class="main-thumbnail"
             src={{this.externalThumbnailUrl}}
             loading="lazy"
+            referrerpolicy="no-referrer"
             alt=""
           />
         {{else}}
