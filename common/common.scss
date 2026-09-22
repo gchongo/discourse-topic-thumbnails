@@ -466,10 +466,10 @@
     position: relative !important;
     display: grid !important;
     grid-template-areas:
-      "image"
-      "title"
-      "meta" !important;
-    grid-template-columns: 1fr !important;
+      "image image image"
+      "title title title"
+      "stats tags avatar" !important;
+    grid-template-columns: auto minmax(0, 1fr) auto !important;
     grid-template-rows: auto auto auto !important;
     height: auto !important;
     min-height: 0 !important;
@@ -477,6 +477,7 @@
     padding: 0 !important;
     overflow: hidden;
     border-radius: 8px;
+    align-items: center;
 
     // Only cover + title stay as cells; stock posts/views/likes columns must not leak.
     > td,
@@ -490,13 +491,10 @@
     }
 
     > td:has(.topic-list-thumbnail),
-    > .topic-list-data:has(.topic-list-thumbnail) {
-      display: contents !important;
-    }
-
+    > .topic-list-data:has(.topic-list-thumbnail),
     > td.main-link,
     > .topic-list-data.main-link {
-      display: flex !important;
+      display: contents !important;
     }
   }
 
@@ -534,26 +532,16 @@
   .topic-list-data.posters,
   .topic-thumbnail-likes,
   .topic-thumbnail-blog-data,
-  .pull-right {
+  .pull-right,
+  .activity,
+  .post-activity,
+  .relative-date {
     display: none !important;
   }
 
-  .main-link,
-  td.main-link,
-  .topic-list-data.main-link {
+  .topic-statuses,
+  .link-top-line {
     grid-area: title !important;
-    grid-column: 1 !important;
-    grid-row: auto !important;
-    position: relative !important;
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 6px;
-    width: 100% !important;
-    max-width: none !important;
-    min-width: 0 !important;
-    margin: 0 !important;
-    padding: 10px 12px 4px !important;
-    background: transparent !important;
   }
 
   .link-top-line {
@@ -562,26 +550,19 @@
     -webkit-line-clamp: 2;
     overflow: hidden;
     line-height: 1.35;
+    padding: 10px 12px 4px !important;
+    margin: 0 !important;
   }
 
-  .link-bottom-line {
-    display: flex !important;
-    align-items: center;
-    flex-wrap: nowrap;
-    gap: 4px 8px;
-    min-height: 0;
-    overflow: hidden;
-  }
-
-  // Comments / views / likes (card meta row)
+  // Meta row: [stats] [tags] [avatar]
   .topic-thumbnails-grid__stats {
-    grid-area: meta;
+    grid-area: stats !important;
     display: flex !important;
     align-items: center;
     flex-wrap: nowrap;
     gap: 12px;
     min-width: 0;
-    padding: 4px 44px 10px 12px;
+    padding: 4px 0 10px 12px;
     color: var(--primary-medium);
     font-size: 13px;
     line-height: 1;
@@ -606,18 +587,48 @@
     }
   }
 
+  .link-bottom-line {
+    grid-area: tags !important;
+    display: flex !important;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 4px 8px;
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+    padding: 4px 8px 10px !important;
+    margin: 0 !important;
+
+    .badge-category__wrapper,
+    .badge-category,
+    a[href*="://"]:not(.discourse-tag) {
+      display: none !important;
+    }
+
+    .discourse-tags {
+      display: flex !important;
+      min-width: 0;
+      overflow: hidden;
+    }
+
+    .discourse-tag {
+      display: inline-flex !important;
+    }
+  }
+
   // Avatar injected by topic-list-thumbnail.gjs
   .topic-thumbnails-grid__avatar {
-    position: absolute !important;
-    right: 12px;
-    bottom: 10px;
-    z-index: 5;
+    grid-area: avatar !important;
+    position: static !important;
     display: block !important;
     width: 24px;
     height: 24px;
+    margin: 0 12px 10px 0;
     overflow: hidden;
     border-radius: 50%;
     line-height: 0;
+    justify-self: end;
+    align-self: center;
 
     .avatar,
     img {
@@ -629,12 +640,15 @@
   }
 }
 
-// Desktop cards: hide tags (stats + avatar already fill the meta row).
+// Desktop cards: no tags (stats + avatar only on the meta row).
 .desktop-view .list-container .topic-list.topic-thumbnails-grid,
 .desktop-view .topic-list.topic-thumbnails-grid {
-  .link-bottom-line .discourse-tags,
-  .link-bottom-line .discourse-tag {
+  .link-bottom-line {
     display: none !important;
+  }
+
+  .topic-thumbnails-grid__stats {
+    grid-area: stats / stats / stats / tags !important;
   }
 }
 
