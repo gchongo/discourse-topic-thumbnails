@@ -4,6 +4,7 @@ import coldAgeClass from "discourse/helpers/cold-age-class";
 import concatClass from "discourse/helpers/concat-class";
 import dIcon from "discourse/helpers/d-icon";
 import formatDate from "discourse/helpers/format-date";
+import { getURLWithCDN } from "discourse/lib/get-url";
 
 export default class TopicListThumbnail extends Component {
   @service topicThumbnails;
@@ -83,13 +84,53 @@ export default class TopicListThumbnail extends Component {
       : this.topic.get("lastUnreadUrl");
   }
 
+  // Prefer last poster, then any featured/poster user (grid avatar)
+  get gridAvatarUser() {
+    const topic = this.topic;
+    return (
+      topic?.lastPosterUser ||
+      topic?.lastPoster?.user ||
+      topic?.featuredUsers?.find((p) => p?.user)?.user ||
+      topic?.posters?.find((p) => p?.user)?.user ||
+      topic?.creator
+    );
+  }
+
+  get gridAvatarUrl() {
+    const template = this.gridAvatarUser?.avatar_template;
+    if (!template) {
+      return null;
+    }
+    return getURLWithCDN(template.replace(/\{size\}/g, "48"));
+  }
+
+  get gridAvatarUsername() {
+    return this.gridAvatarUser?.username;
+  }
+
+  get gridAvatarPath() {
+    const user = this.gridAvatarUser;
+    if (!user) {
+      return null;
+    }
+    return user.path || `/u/${user.username}`;
+  }
+
+  get thumbnailClass() {
+    const classes = ["topic-list-thumbnail"];
+    if (this.hasThumbnail) {
+      classes.push("has-thumbnail");
+      if (this.isLandscape) {
+        classes.push("landscape");
+      }
+    } else {
+      classes.push("no-thumbnail");
+    }
+    return classes.join(" ");
+  }
+
   <template>
-    <div
-      class={{concatClass
-        "topic-list-thumbnail"
-        (if this.hasThumbnail "has-thumbnail" "no-thumbnail")
-      }}
-    >
+    <div class={{this.thumbnailClass}}>
       <a href={{this.url}} role="img" aria-label={{this.topic.title}}>
         {{#if this.hasThumbnail}}
           <img
@@ -117,6 +158,26 @@ export default class TopicListThumbnail extends Component {
         {{/if}}
       </a>
     </div>
+
+    {{#if this.topicThumbnails.displayGrid}}
+      {{#if this.gridAvatarUrl}}
+        <a
+          href={{this.gridAvatarPath}}
+          data-user-card={{this.gridAvatarUsername}}
+          class="topic-thumbnails-grid__avatar"
+          title={{this.gridAvatarUsername}}
+        >
+          <img
+            src={{this.gridAvatarUrl}}
+            class="avatar"
+            width="24"
+            height="24"
+            alt=""
+            loading="lazy"
+          />
+        </a>
+      {{/if}}
+    {{/if}}
 
     {{#if this.topicThumbnails.showLikes}}
       <div class="topic-thumbnail-likes">

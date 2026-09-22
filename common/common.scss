@@ -454,12 +454,12 @@
   }
 }
 
-// grid only — beat flat-theme topic-list rules; title / tags+avatar card layout
+// grid only — beat flat-theme; title + tags left / avatar right
 .desktop-view .list-container .topic-list.topic-thumbnails-grid,
 .topic-list.topic-thumbnails-grid {
   .topic-list-body {
-    column-gap: 16px !important;
-    row-gap: 16px !important;
+    column-gap: 20px !important;
+    row-gap: 20px !important;
   }
 
   .topic-list-item,
@@ -476,11 +476,12 @@
     min-height: 0 !important;
     margin: 0 !important;
     padding: 0 !important;
-    overflow: hidden;
+    overflow: visible;
     border: 1px solid var(--primary-low) !important;
     border-radius: 8px;
     background: var(--primary-low) !important;
     box-shadow: none !important;
+    isolation: isolate;
 
     &:hover {
       background: var(--primary-low) !important;
@@ -488,10 +489,12 @@
 
     > td,
     > .topic-list-data {
+      position: static !important;
       background: transparent !important;
       border: 0 !important;
       padding: 0 !important;
       min-width: 0;
+      overflow: visible !important;
     }
   }
 
@@ -500,6 +503,7 @@
     order: 1;
     display: block !important;
     width: 100% !important;
+    overflow: visible !important;
   }
 
   .topic-list-thumbnail {
@@ -513,6 +517,8 @@
     min-height: 140px;
     aspect-ratio: 16 / 10;
     margin: 0 !important;
+    border-radius: 8px 8px 0 0;
+    overflow: hidden;
   }
 
   .badge-category__wrapper,
@@ -551,6 +557,13 @@
     margin: 0 !important;
     padding: 10px 44px 10px 12px !important;
     background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  .link-top-line,
+  .link-bottom-line {
+    background: transparent !important;
+    box-shadow: none !important;
   }
 
   .link-top-line {
@@ -571,33 +584,45 @@
     overflow: hidden;
   }
 
-  // avatar injected into main-link via outlet
+  // avatar rendered next to thumbnail in same cell; pin to card corner
+  a.topic-thumbnails-grid__avatar,
   .topic-thumbnails-grid__avatar {
-    position: absolute;
-    right: 12px;
-    bottom: 10px;
-    z-index: 2;
-    width: 24px;
-    height: 24px;
-    line-height: 0;
+    position: absolute !important;
+    right: 12px !important;
+    bottom: 12px !important;
+    top: auto !important;
+    left: auto !important;
+    z-index: 30 !important;
+    display: block !important;
+    width: 28px !important;
+    height: 28px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    border-radius: 50% !important;
+    background: var(--secondary, #fff) !important;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08);
+    line-height: 0 !important;
+    font-size: 0 !important;
+    color: transparent !important;
 
-    a {
-      display: block;
-      width: 24px;
-      height: 24px;
-      overflow: hidden;
-      border-radius: 50%;
+    &::before,
+    &::after {
+      content: none !important;
+      display: none !important;
     }
 
     .avatar,
-    img.avatar {
+    img.avatar,
+    img {
       display: block !important;
-      width: 24px !important;
-      height: 24px !important;
-      border-radius: 50% !important;
+      width: 28px !important;
+      height: 28px !important;
+      max-width: none !important;
       border: 0 !important;
+      border-radius: 50% !important;
       box-shadow: none !important;
-      object-fit: cover;
+      object-fit: cover !important;
     }
   }
 }
