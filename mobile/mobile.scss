@@ -73,7 +73,8 @@
   }
 }
 
-// Compact Meta-style cards on phones: short 16:9 cover, title + tags + one avatar.
+// Compact Meta-style cards on phones.
+// Only: cover + title + our stats row + one avatar. No stock columns, tags, or time.
 .mobile-view .topic-list.topic-thumbnails-grid,
 .mobile-view .list-container .topic-list.topic-thumbnails-grid {
   .topic-list-body {
@@ -109,11 +110,14 @@
     > td,
     > .topic-list-data {
       display: none !important;
-      width: 100% !important;
+      width: auto !important;
+      max-width: none !important;
       padding: 0 !important;
       margin: 0 !important;
       background: transparent !important;
       border: 0 !important;
+      grid-column: unset !important;
+      grid-row: unset !important;
     }
 
     > td:has(.topic-list-thumbnail),
@@ -123,8 +127,8 @@
 
     > td.main-link,
     > .topic-list-data.main-link {
-      display: block !important;
-      grid-area: title;
+      display: flex !important;
+      grid-area: title !important;
     }
   }
 
@@ -151,8 +155,9 @@
     }
   }
 
+  // Our injected stats only.
   .topic-thumbnails-grid__stats {
-    grid-area: meta;
+    grid-area: meta !important;
     display: flex !important;
     align-items: center;
     gap: 10px;
@@ -160,6 +165,8 @@
     color: var(--primary-medium);
     font-size: 12px;
     line-height: 1;
+    grid-column: 1 !important;
+    grid-row: auto !important;
 
     .topic-thumbnails-grid__stat {
       display: inline-flex;
@@ -173,29 +180,52 @@
     }
   }
 
-  // Kill flat + stock mobile meta that stacks under the title.
+  // Kill stock / flat meta so it cannot duplicate our stats row.
   .badge-category__wrapper,
   .badge-category,
   .pull-left,
+  .pull-right,
   .topic-item-stats,
   .topic-item-stats__category-tags,
   .topic-item-stats .activity,
   .topic-item-metadata > .pull-right,
-  .num.activity,
-  td.activity,
-  .topic-list-data.activity,
-  .posts-map,
+  .num,
   .num.posts-map,
-  .views,
   .num.views,
   .num.likes,
+  .num.activity,
+  .posts-map,
+  .views,
+  .likes,
   .posters,
   td.posters,
+  td.posts,
+  td.views,
+  td.likes,
+  td.activity,
+  td.num,
   .topic-list-data.posters,
+  .topic-list-data.posts,
+  .topic-list-data.views,
+  .topic-list-data.likes,
+  .topic-list-data.activity,
+  .topic-list-data.num,
+  .activity,
+  .post-activity,
+  .relative-date,
   .topic-excerpt,
   .topic-thumbnail-likes,
-  .topic-thumbnail-blog-data {
+  .topic-thumbnail-blog-data,
+  .badge-notification,
+  .unread-indicator,
+  .topic-post-badges,
+  .link-bottom-line {
     display: none !important;
+  }
+
+  // Don't let a broad .num hide kill numbers inside our stats.
+  .topic-thumbnails-grid__stats .number {
+    display: inline !important;
   }
 
   .topic-item-metadata,
@@ -209,7 +239,7 @@
     position: relative !important;
     display: flex !important;
     flex-direction: column !important;
-    gap: 2px;
+    gap: 0;
     width: 100% !important;
     max-width: none !important;
     min-width: 0 !important;
@@ -233,31 +263,6 @@
     }
   }
 
-  .link-bottom-line {
-    display: flex !important;
-    align-items: center;
-    flex-wrap: nowrap;
-    gap: 4px 6px;
-    min-height: 18px;
-    overflow: hidden;
-
-    // Keep tags; drop external domain chip (e.g. bilibili.com).
-    .badge-category__wrapper,
-    .badge-category,
-    a[href*="://"]:not(.discourse-tag) {
-      display: none !important;
-    }
-
-    .discourse-tags {
-      max-width: 100%;
-      overflow: hidden;
-    }
-
-    .discourse-tag {
-      font-size: 12px;
-    }
-  }
-
   .topic-thumbnails-grid__avatar {
     position: absolute !important;
     right: 10px;
@@ -269,6 +274,7 @@
     overflow: hidden;
     border-radius: 50%;
     line-height: 0;
+    grid-area: unset !important;
 
     .avatar,
     img {
