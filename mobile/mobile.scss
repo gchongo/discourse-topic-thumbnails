@@ -72,3 +72,193 @@
     max-width: unset;
   }
 }
+
+// Compact Meta-style cards on phones: short 16:9 cover, title + tags + one avatar.
+.mobile-view .topic-list.topic-thumbnails-grid,
+.mobile-view .list-container .topic-list.topic-thumbnails-grid {
+  .topic-list-body {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    column-gap: 0 !important;
+    row-gap: 10px !important;
+    padding: 0 10px;
+    box-sizing: border-box;
+  }
+
+  .topic-list-item,
+  .topic-list-item.selected {
+    position: relative !important;
+    display: grid !important;
+    grid-template-areas:
+      "image"
+      "title" !important;
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto auto !important;
+    height: auto !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    gap: 0 !important;
+    overflow: hidden;
+    border-radius: 10px;
+    border: 1px solid var(--primary-low) !important;
+    background: var(--primary-low) !important;
+    box-shadow: none !important;
+
+    > td,
+    > .topic-list-data {
+      display: none !important;
+      width: 100% !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      background: transparent !important;
+      border: 0 !important;
+    }
+
+    > td:has(.topic-list-thumbnail),
+    > .topic-list-data:has(.topic-list-thumbnail),
+    > td.main-link,
+    > .topic-list-data.main-link {
+      display: block !important;
+    }
+
+    > td:has(.topic-list-thumbnail),
+    > .topic-list-data:has(.topic-list-thumbnail) {
+      grid-area: image;
+    }
+
+    > td.main-link,
+    > .topic-list-data.main-link {
+      grid-area: title;
+    }
+  }
+
+  .topic-list-thumbnail {
+    grid-area: unset;
+    position: relative !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: 160px;
+    aspect-ratio: 16 / 9;
+    float: none !important;
+    margin: 0 !important;
+    border-radius: 10px 10px 0 0;
+
+    .main-thumbnail,
+    .background-thumbnail {
+      object-fit: cover !important;
+    }
+
+    .thumbnail-placeholder .d-icon {
+      width: 32%;
+      height: 32%;
+    }
+  }
+
+  // Kill flat + stock mobile meta that stacks under the title.
+  .badge-category__wrapper,
+  .badge-category,
+  .pull-left,
+  .topic-item-stats,
+  .topic-item-stats__category-tags,
+  .topic-item-stats .activity,
+  .topic-item-metadata > .pull-right,
+  .num.activity,
+  td.activity,
+  .topic-list-data.activity,
+  .posts-map,
+  .num.posts-map,
+  .views,
+  .num.views,
+  .num.likes,
+  .posters,
+  td.posters,
+  .topic-list-data.posters,
+  .topic-excerpt,
+  .topic-thumbnail-likes,
+  .topic-thumbnail-blog-data {
+    display: none !important;
+  }
+
+  .topic-item-metadata,
+  .topic-item-metadata.right {
+    display: contents !important;
+  }
+
+  .main-link,
+  td.main-link,
+  .topic-list-data.main-link {
+    position: relative !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 2px;
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 8px 38px 8px 10px !important;
+    background: transparent !important;
+  }
+
+  .link-top-line {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    line-height: 1.3;
+
+    a.title,
+    .title {
+      font-size: 15px;
+      font-weight: 600;
+      padding: 0 !important;
+    }
+  }
+
+  .link-bottom-line {
+    display: flex !important;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 4px 6px;
+    min-height: 18px;
+    overflow: hidden;
+
+    // Keep tags; drop external domain chip (e.g. bilibili.com).
+    .badge-category__wrapper,
+    .badge-category,
+    a[href*="://"]:not(.discourse-tag) {
+      display: none !important;
+    }
+
+    .discourse-tags {
+      max-width: 100%;
+      overflow: hidden;
+    }
+
+    .discourse-tag {
+      font-size: 12px;
+    }
+  }
+
+  .topic-thumbnails-grid__avatar {
+    position: absolute !important;
+    right: 10px;
+    bottom: 8px;
+    z-index: 5;
+    display: block !important;
+    width: 22px;
+    height: 22px;
+    overflow: hidden;
+    border-radius: 50%;
+    line-height: 0;
+
+    .avatar,
+    img {
+      width: 22px !important;
+      height: 22px !important;
+      border-radius: 50% !important;
+      object-fit: cover;
+    }
+  }
+}

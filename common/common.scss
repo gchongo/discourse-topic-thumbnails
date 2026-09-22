@@ -487,6 +487,11 @@
     aspect-ratio: 16 / 10;
     float: none !important;
     margin: 0 !important;
+
+    .main-thumbnail,
+    .background-thumbnail {
+      object-fit: cover !important;
+    }
   }
 
   // Hide stock meta that makes the card messy
@@ -499,9 +504,12 @@
   .num.posts-map,
   .views,
   .num.views,
+  .num.likes,
   .posters,
   td.posters,
-  .topic-list-data.posters {
+  .topic-list-data.posters,
+  .topic-thumbnail-likes,
+  .topic-thumbnail-blog-data {
     display: none !important;
   }
 
