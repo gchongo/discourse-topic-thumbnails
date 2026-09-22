@@ -477,12 +477,27 @@
     padding: 0 !important;
     overflow: hidden;
     border-radius: 8px;
-  }
 
-  // Let thumbnail / stats / avatar participate in the card grid.
-  > td:has(.topic-list-thumbnail),
-  > .topic-list-data:has(.topic-list-thumbnail) {
-    display: contents !important;
+    // Only cover + title stay as cells; stock posts/views/likes columns must not leak.
+    > td,
+    > .topic-list-data {
+      display: none !important;
+      width: 100% !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      background: transparent !important;
+      border: 0 !important;
+    }
+
+    > td:has(.topic-list-thumbnail),
+    > .topic-list-data:has(.topic-list-thumbnail) {
+      display: contents !important;
+    }
+
+    > td.main-link,
+    > .topic-list-data.main-link {
+      display: flex !important;
+    }
   }
 
   .topic-list-thumbnail {
@@ -501,7 +516,7 @@
     }
   }
 
-  // Hide stock meta that makes the card messy
+  // Hide stock meta that makes the card messy (belt-and-suspenders with td hide above)
   .badge-category__wrapper,
   .badge-category,
   .num.activity,
@@ -509,6 +524,8 @@
   .topic-list-data.activity,
   .posts-map,
   .num.posts-map,
+  td.posts,
+  .topic-list-data.posts,
   .views,
   .num.views,
   .num.likes,
@@ -516,7 +533,8 @@
   td.posters,
   .topic-list-data.posters,
   .topic-thumbnail-likes,
-  .topic-thumbnail-blog-data {
+  .topic-thumbnail-blog-data,
+  .pull-right {
     display: none !important;
   }
 
