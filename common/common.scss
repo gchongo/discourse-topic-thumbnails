@@ -2,6 +2,11 @@
   display: none;
 }
 
+// Never draw a second stats row in the component — use core list columns only.
+.topic-thumbnails-grid__stats {
+  display: none !important;
+}
+
 .topic-thumbnails-list,
 .topic-thumbnails-grid,
 .topic-thumbnails-masonry,
@@ -168,6 +173,12 @@
   .views,
   .topic-excerpt {
     display: none;
+  }
+
+  // Card mode (below) re-enables posts/views/likes for all themes.
+  // Never show component-drawn stats overlays.
+  .topic-thumbnails-grid__stats {
+    display: none !important;
   }
 
   .main-link {
@@ -455,6 +466,7 @@
 }
 
 // Card layout for grid mode only (do not affect normal Latest list).
+// Meta row uses theme stock columns: posts / views / likes (+ tags on mobile) + avatar.
 .desktop-view .list-container .topic-list.topic-thumbnails-grid,
 .topic-list.topic-thumbnails-grid {
   .topic-list-body {
@@ -466,28 +478,30 @@
     position: relative !important;
     display: grid !important;
     grid-template-areas:
-      "image image image"
-      "title title title"
-      "stats tags avatar" !important;
-    grid-template-columns: auto minmax(0, 1fr) auto !important;
+      "image image image image image"
+      "title title title title title"
+      "posts views likes tags avatar" !important;
+    grid-template-columns: auto auto auto minmax(0, 1fr) auto !important;
     grid-template-rows: auto auto auto !important;
     height: auto !important;
     min-height: 0 !important;
-    gap: 0 !important;
+    gap: 0 10px !important;
     padding: 0 !important;
     overflow: hidden;
     border-radius: 8px;
     align-items: center;
 
-    // Only cover + title stay as cells; stock posts/views/likes columns must not leak.
     > td,
     > .topic-list-data {
       display: none !important;
-      width: 100% !important;
+      width: auto !important;
+      max-width: none !important;
       padding: 0 !important;
       margin: 0 !important;
       background: transparent !important;
       border: 0 !important;
+      grid-column: unset !important;
+      grid-row: unset !important;
     }
 
     > td:has(.topic-list-thumbnail),
@@ -495,6 +509,35 @@
     > td.main-link,
     > .topic-list-data.main-link {
       display: contents !important;
+    }
+
+    // Theme stock stats (flat icons) — keep these only.
+    > td.posts,
+    > td.num.posts-map,
+    > .topic-list-data.posts,
+    > .topic-list-data.posts-map {
+      display: inline-flex !important;
+      grid-area: posts !important;
+      align-items: center;
+      padding: 4px 0 10px 12px !important;
+    }
+
+    > td.views,
+    > td.num.views,
+    > .topic-list-data.views {
+      display: inline-flex !important;
+      grid-area: views !important;
+      align-items: center;
+      padding: 4px 0 10px 0 !important;
+    }
+
+    > td.likes,
+    > td.num.likes,
+    > .topic-list-data.likes {
+      display: inline-flex !important;
+      grid-area: likes !important;
+      align-items: center;
+      padding: 4px 0 10px 0 !important;
     }
   }
 
@@ -514,24 +557,18 @@
     }
   }
 
-  // Hide stock meta that makes the card messy (belt-and-suspenders with td hide above)
+  // Hide everything else from the stock list row.
   .badge-category__wrapper,
   .badge-category,
   .num.activity,
   td.activity,
   .topic-list-data.activity,
-  .posts-map,
-  .num.posts-map,
-  td.posts,
-  .topic-list-data.posts,
-  .views,
-  .num.views,
-  .num.likes,
   .posters,
   td.posters,
   .topic-list-data.posters,
   .topic-thumbnail-likes,
   .topic-thumbnail-blog-data,
+  .topic-thumbnails-grid__stats,
   .pull-right,
   .activity,
   .post-activity,
@@ -554,39 +591,6 @@
     margin: 0 !important;
   }
 
-  // Meta row: [stats] [tags] [avatar]
-  .topic-thumbnails-grid__stats {
-    grid-area: stats !important;
-    display: flex !important;
-    align-items: center;
-    flex-wrap: nowrap;
-    gap: 12px;
-    min-width: 0;
-    padding: 4px 0 10px 12px;
-    color: var(--primary-medium);
-    font-size: 13px;
-    line-height: 1;
-    box-sizing: border-box;
-  }
-
-  .topic-thumbnails-grid__stat {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    white-space: nowrap;
-    font-variant-numeric: tabular-nums;
-
-    .d-icon {
-      width: 14px;
-      height: 14px;
-      color: var(--primary-medium);
-    }
-
-    .number {
-      color: var(--primary-medium);
-    }
-  }
-
   .link-bottom-line {
     grid-area: tags !important;
     display: flex !important;
@@ -596,7 +600,7 @@
     min-width: 0;
     max-width: 100%;
     overflow: hidden;
-    padding: 4px 8px 10px !important;
+    padding: 4px 8px 10px 0 !important;
     margin: 0 !important;
 
     .badge-category__wrapper,
@@ -614,6 +618,19 @@
     .discourse-tag {
       display: inline-flex !important;
     }
+  }
+
+  .posts-map,
+  .num.posts-map,
+  .views,
+  .num.views,
+  .num.likes {
+    width: auto !important;
+    min-width: 0 !important;
+    height: auto !important;
+    margin: 0 !important;
+    font-size: 13px;
+    line-height: 1;
   }
 
   // Avatar injected by topic-list-thumbnail.gjs
@@ -640,15 +657,23 @@
   }
 }
 
-// Desktop cards: no tags (stats + avatar only on the meta row).
+// Desktop cards: no tags.
 .desktop-view .list-container .topic-list.topic-thumbnails-grid,
 .desktop-view .topic-list.topic-thumbnails-grid {
   .link-bottom-line {
     display: none !important;
   }
 
-  .topic-thumbnails-grid__stats {
-    grid-area: stats / stats / stats / tags !important;
+  .topic-list-item {
+    grid-template-areas:
+      "image image image image"
+      "title title title title"
+      "posts views likes avatar" !important;
+    grid-template-columns: auto auto auto 1fr !important;
+  }
+
+  .topic-thumbnails-grid__avatar {
+    justify-self: end;
   }
 }
 
