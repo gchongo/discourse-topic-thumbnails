@@ -626,3 +626,14 @@
     }
   }
 }
+
+
+# Hide OP cover images marked with |thumbnail so they feed topic cards
+# but do not appear in the post body.
+.cooked,
+.d-editor-preview {
+  img[data-thumbnail="true"],
+  .lightbox-wrapper:has(img[data-thumbnail="true"]) {
+    display: none !important;
+  }
+}

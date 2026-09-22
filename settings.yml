@@ -100,10 +100,12 @@ list_thumbnail_size:
 bilibili_remote_thumbnail_fallback:
   default: true
   client: true
+  description:
+    en: "When a topic has no local Discourse thumbnail, try Discourse /onebox and images already in the first post. Direct Bilibili API is not used (browser CORS/CSP). For reliable covers, upload an image in the first post or set bilibili_thumbnail_urls."
 
 bilibili_thumbnail_urls:
   type: list
   default: ""
   client: true
   description:
-    en: "Optional Bilibili cover overrides. Pairs of BV_ID|image_url separated by | (e.g. BV1xx|https://example.com/cover.jpg|BV2yy|https://...)."
+    en: "Manual Bilibili cover mappings. Pairs of BV_ID|image_url separated by | (e.g. BV1xx|https://i0.hdslb.com/...jpg)."

@@ -4,9 +4,8 @@ const bilibiliThumbnailCache = new Map();
 const bilibiliThumbnailInflight = new Map();
 const LOCAL_THUMBNAIL_PATH_REGEXP = /\/(?:uploads|optimized)\//;
 const BILIBILI_VIDEO_ID_REGEXP =
-  /(?:bilibili\.com\/video\/|player\.bilibili\.com\/[^"'?\s]*[?&](?:bvid=)|\/video\/|[?&]bvid=)(BV[a-zA-Z0-9]+)/i;
-const BILIBILI_AID_REGEXP =
-  /(?:bilibili\.com\/video\/av|player\.bilibili\.com\/[^"'?\s]*[?&](?:aid=)|[?&]aid=)(\d+)/i;
+  /(?:bilibili\.com\/video\/|bvid=)(BV[a-zA-Z0-9]+)/i;
+const BILIBILI_AID_REGEXP = /(?:bilibili\.com\/video\/av|[?&]aid=)(\d+)/i;
 const BILIBILI_VIDEO_URL_REGEXP =
   /https?:\/\/(?:www\.)?bilibili\.com\/video\/(BV[a-zA-Z0-9]+|av\d+)[^"'\s<]*/i;
 const BILIBILI_SHORT_URL_REGEXP =
@@ -15,8 +14,8 @@ const BILIBILI_PLAYER_URL_REGEXP =
   /https?:\/\/player\.bilibili\.com\/player\.html\?[^"'\s<]*/i;
 
 function remoteFallbackEnabled() {
-  // New theme settings may be undefined until the component is re-saved;
-  // treat missing as enabled (matches settings.yml default: true).
+  // Theme-only: try Discourse /onebox + cooked images. No direct Bilibili API
+  // (blocked by browser CORS / Discourse CSP without a server plugin).
   return settings.bilibili_remote_thumbnail_fallback !== false;
 }
 
@@ -129,8 +128,7 @@ function videoFromText(text) {
 }
 
 export function extractBilibiliVideo(sources) {
-  const text = sources.filter(Boolean).join(" ");
-  return videoFromText(text);
+  return videoFromText(sources.filter(Boolean).join(" "));
 }
 
 function extractImageFromHtml(html, localOnly = false) {
@@ -159,7 +157,7 @@ function extractImageFromHtml(html, localOnly = false) {
         image.getAttribute("data-orig-src")
     );
     if (src) {
-      candidates.push({ url: src, width: null });
+      candidates.push({ url: src });
     }
   });
 
@@ -168,53 +166,6 @@ function extractImageFromHtml(html, localOnly = false) {
     : candidates;
 
   return usable[0]?.url || null;
-}
-
-function fetchBilibiliApiCoverViaJsonp(videoId) {
-  const query = videoId.toLowerCase().startsWith("av")
-    ? `aid=${videoId.slice(2)}`
-    : `bvid=${videoId}`;
-  const callbackName = `__discourseBiliThumb_${Date.now()}_${Math.floor(
-    Math.random() * 1e6
-  )}`;
-
-  return new Promise((resolve) => {
-    const script = document.createElement("script");
-    let settled = false;
-
-    const cleanup = () => {
-      if (settled) {
-        return;
-      }
-      settled = true;
-      try {
-        delete window[callbackName];
-      } catch {
-        window[callbackName] = undefined;
-      }
-      script.remove();
-    };
-
-    const timer = window.setTimeout(() => {
-      cleanup();
-      resolve(null);
-    }, 8000);
-
-    window[callbackName] = (payload) => {
-      window.clearTimeout(timer);
-      cleanup();
-      resolve(normalizeThumbnailUrl(payload?.data?.pic));
-    };
-
-    script.src = `https://api.bilibili.com/x/web-interface/view?${query}&jsonp=jsonp&callback=${callbackName}`;
-    script.async = true;
-    script.onerror = () => {
-      window.clearTimeout(timer);
-      cleanup();
-      resolve(null);
-    };
-    document.head.appendChild(script);
-  });
 }
 
 async function fetchOneboxThumbnail(videoUrl, topic) {
@@ -230,7 +181,6 @@ async function fetchOneboxThumbnail(videoUrl, topic) {
     headers: { Accept: "text/html" },
   }).then((r) => r.text());
 
-  // Prefer any usable image from onebox (local first, then remote covers).
   return (
     extractImageFromHtml(html, true) ||
     (remoteFallbackEnabled() ? extractImageFromHtml(html) : null)
@@ -254,7 +204,7 @@ async function resolveVideoFromTopicJson(topic) {
 
     if (remoteFallbackEnabled()) {
       const cookedRemoteImage = extractImageFromHtml(cooked, false);
-      if (cookedRemoteImage && /hdslb\.com|bili(img|bili)/i.test(cookedRemoteImage)) {
+      if (cookedRemoteImage) {
         return { thumbnailUrl: cookedRemoteImage };
       }
     }
@@ -262,6 +212,7 @@ async function resolveVideoFromTopicJson(topic) {
     const video = extractBilibiliVideo([
       payload?.featured_link,
       cooked,
+      firstPost?.raw,
       firstPost?.link_counts?.map((link) => link.url).join(" "),
       topic.excerpt,
       topic.last_post_excerpt,
@@ -281,7 +232,6 @@ async function resolveBilibiliThumbnailForTopic(topic) {
     topic.title,
   ]);
 
-  // List payloads often omit the Bilibili URL; load first post cooked HTML.
   if (!video?.id) {
     const fromTopic = await resolveVideoFromTopicJson(topic);
     if (fromTopic?.thumbnailUrl) {
@@ -292,33 +242,24 @@ async function resolveBilibiliThumbnailForTopic(topic) {
     }
   }
 
-  if (!video?.url && !video?.id) {
-    return null;
-  }
-
-  if (video.id) {
+  if (video?.id) {
     const override = bilibiliThumbnailOverrides.get(video.id.toLowerCase());
     if (override) {
       return normalizeThumbnailUrl(override);
     }
   }
 
-  if (video.url) {
+  if (!remoteFallbackEnabled()) {
+    return null;
+  }
+
+  // Theme-only path: Discourse core /onebox (same-origin). Works only when
+  // onebox HTML contains an <img>. Pure iframe embeds will not yield a cover.
+  if (video?.url) {
     try {
       const oneboxImage = await fetchOneboxThumbnail(video.url, topic);
       if (oneboxImage) {
         return oneboxImage;
-      }
-    } catch {
-      // fall through
-    }
-  }
-
-  if (video.id && remoteFallbackEnabled()) {
-    try {
-      const apiCover = await fetchBilibiliApiCoverViaJsonp(video.id);
-      if (apiCover) {
-        return apiCover;
       }
     } catch {
       // ignore
@@ -329,7 +270,7 @@ async function resolveBilibiliThumbnailForTopic(topic) {
 }
 
 /**
- * Returns a cover image URL for Bilibili topics without local Discourse thumbnails.
+ * Theme-component-only cover lookup (no plugin / no direct Bilibili API).
  */
 export async function loadBilibiliThumbnailForTopic(topic) {
   if (!topic?.id || (topic.thumbnails?.length || 0) > 0) {
