@@ -555,7 +555,7 @@
     overflow: hidden;
   }
 
-  // Comments / views / likes (desktop card meta row)
+  // Comments / views / likes (card meta row)
   .topic-thumbnails-grid__stats {
     grid-area: meta;
     display: flex !important;
@@ -608,6 +608,15 @@
       border-radius: 50% !important;
       object-fit: cover;
     }
+  }
+}
+
+// Desktop cards: hide tags (stats + avatar already fill the meta row).
+.desktop-view .list-container .topic-list.topic-thumbnails-grid,
+.desktop-view .topic-list.topic-thumbnails-grid {
+  .link-bottom-line .discourse-tags,
+  .link-bottom-line .discourse-tag {
+    display: none !important;
   }
 }
 
