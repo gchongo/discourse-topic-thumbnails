@@ -1,7 +1,6 @@
 import { readOnly } from "@ember/object/computed";
 import { service } from "@ember/service";
 import { apiInitializer } from "discourse/lib/api";
-import TopicListGridLikesCell from "../components/topic-list-grid-likes-cell";
 import TopicListThumbnail from "../components/topic-list-thumbnail";
 
 export default apiInitializer((api) => {
@@ -30,17 +29,6 @@ export default apiInitializer((api) => {
         { before: "topic" }
       );
     }
-
-    // Grid cards need the core likes column so any theme can style .num.likes.
-    // Icons come from the theme CSS, not from this component.
-    if (ttService.displayGrid) {
-      columns.add(
-        "likes",
-        { item: TopicListGridLikesCell },
-        { after: "replies" }
-      );
-    }
-
     return columns;
   });
 
@@ -55,7 +43,6 @@ export default apiInitializer((api) => {
 
   api.registerValueTransformer("topic-list-item-mobile-layout", ({ value }) => {
     if (ttService.enabledForRoute && !ttService.displayList) {
-      // Force the desktop layout
       return false;
     }
     return value;

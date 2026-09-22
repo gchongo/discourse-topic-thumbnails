@@ -2,11 +2,6 @@
   display: none;
 }
 
-// Never draw a second stats row in the component — use core list columns only.
-.topic-thumbnails-grid__stats {
-  display: none !important;
-}
-
 .topic-thumbnails-list,
 .topic-thumbnails-grid,
 .topic-thumbnails-masonry,
@@ -31,7 +26,6 @@
       }
     }
 
-    // Blurred background image
     .background-thumbnail {
       z-index: 0;
       position: absolute;
@@ -45,7 +39,6 @@
       left: calc(-2 * #{$blur_size});
     }
 
-    // Tint background to blend with $secondary
     &::after {
       z-index: 1;
       content: "";
@@ -124,8 +117,6 @@
 
   .topic-list-thumbnail {
     z-index: 0;
-
-    // position: absolute;
     width: 100%;
     height: 100%;
     top: 0;
@@ -175,12 +166,6 @@
     display: none;
   }
 
-  // Card mode (below) re-enables posts/views/likes for all themes.
-  // Never show component-drawn stats overlays.
-  .topic-thumbnails-grid__stats {
-    display: none !important;
-  }
-
   .main-link {
     grid-area: title;
     padding: 10px;
@@ -218,244 +203,67 @@
     grid-template-columns: repeat(auto-fill, minmax(30%, 1fr));
     column-gap: 1.5em;
     row-gap: 1.5em;
-    border: 0;
   }
+}
 
+.topic-thumbnails-minimal {
   .topic-list-item {
     display: grid;
     position: relative;
-    min-width: 0;
     height: 250px;
     grid-template-areas:
-      " image image image"
-      " title likes posts";
-    grid-template-rows: 1fr 45px;
-    grid-template-columns: 70% minmax(0, 15%) minmax(0, 15%);
-    border-bottom: none;
+      "image image image"
+      "title title title";
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr auto;
+    background-color: var(--primary-low);
+    border: 1px solid var(--primary-low);
+    overflow: hidden;
 
-    &.visited {
-      background-color: transparent !important;
-
-      .link-top-line {
-        color: var(--primary-medium);
-      }
+    &.selected,
+    &.last-visit.selected {
+      border: 1px solid var(--quaternary);
     }
   }
 
   .topic-list-thumbnail {
-    z-index: 0;
-    background-color: var(--secondary);
-    border-radius: 0.5em;
-    border: 1px solid var(--primary-low);
-    width: calc(100% - 2px);
-    height: calc(100% - 2px);
-    top: 0;
-    left: 0;
     grid-area: image;
-    overflow: hidden;
-  }
-
-  .activity,
-  .main-link,
-  .posters,
-  .views,
-  .topic-excerpt,
-  .num.activity,
-  .link-bottom-line {
-    display: none;
-  }
-
-  .topic-thumbnail-likes {
-    grid-area: likes;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: var(--primary-low-mid);
-    overflow: hidden;
-
-    .number {
-      font-size: 13px;
-      font-weight: bold;
-    }
-
-    .d-icon {
-      font-size: 13px;
-      margin-right: 0.5em;
-    }
-  }
-
-  .posts-map {
-    padding: 0;
-    grid-area: posts;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-    width: auto !important; // overrides very specific core style
-
-    .badge-posts {
-      padding: 0;
-    }
-
-    span.number {
-      color: var(--primary-low-mid);
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
-      font-size: 13px;
-
-      &::before {
-        content: "";
-        background-color: var(--primary-low-mid);
-        mask-repeat: no-repeat;
-        mask-image: url('data:image/svg+xml; utf8, <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="comment" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-comment fa-w-16 fa-2x"><path fill="gray" d="M256 32C114.6 32 0 125.1 0 240c0 49.6 21.4 95 57 130.7C44.5 421.1 2.7 466 2.2 466.5c-2.2 2.3-2.8 5.7-1.5 8.7S4.8 480 8 480c66.3 0 116-31.8 140.6-51.4 32.7 12.3 69 19.4 107.4 19.4 141.4 0 256-93.1 256-208S397.4 32 256 32z" class=""></path></svg>');
-        display: block;
-        height: 13px;
-        width: 13px;
-        margin-right: 0.5em;
-      }
-    }
+    width: 100%;
+    height: 100%;
   }
 
   .main-link {
     grid-area: title;
-    padding: 10px 0 !important;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    font-weight: 600;
-    width: 100%;
-
-    .link-top-line {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      color: var(--primary);
-
-      a.title {
-        color: var(--primary);
-        padding: 0 !important;
-      }
-    }
+    z-index: 2;
+    padding: 10px;
+    background-color: rgb(var(--primary-low-rgb), 0.85);
   }
 
-  .d-tooltip-content {
-    white-space: normal;
+  .activity,
+  .posters,
+  .posts-map,
+  .views,
+  .topic-excerpt {
+    display: none;
   }
 }
 
 .topic-thumbnails-blog-style-grid {
-  .num.posts-map {
-    display: none;
-  }
-
-  .topic-list-body {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(48%, 1fr));
-    column-gap: 1.5em;
-    row-gap: 1.5em;
-    border: 0;
-  }
-
-  .topic-list-item {
-    height: auto;
-    grid-template-rows: 200px auto min-content min-content;
-    grid-template-areas:
-      "image image image"
-      "content content content"
-      "data data data"
-      "activity activity activity";
-  }
-
-  .main-link {
-    grid-area: content;
-
-    .docs-topic-link {
-      display: unset;
-    }
-
-    .link-top-line {
-      color: var(--tertiary);
-    }
-  }
-
-  .link-bottom-line {
-    display: block;
-
-    .badge-wrapper {
-      display: none;
-    }
-  }
-
-  .topic-excerpt {
-    display: block;
-    font-weight: normal;
-  }
-
-  .topic-thumbnail-blog-data {
-    grid-area: data;
-    display: flex;
-    align-items: flex-start;
-    gap: 1em;
-  }
-
-  .topic-thumbnail-blog-data-activity {
-    display: block;
-  }
-
-  .topic-list-data:last-of-type {
-    display: none;
-  }
-
-  .topic-thumbnail-blog-data-likes,
-  .topic-thumbnail-blog-data-comments,
-  .topic-thumbnail-blog-data-views,
-  .topic-thumbnail-blog-data-activity {
-    grid-area: likes;
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    color: var(--primary-low-mid);
-    width: auto;
-
-    .number {
-      font-size: var(--font-down-1);
-      font-weight: bold;
-    }
-
-    .d-icon {
-      font-size: var(--font-down-1);
-      margin-right: 0.5em;
-    }
-
-    a {
-      color: var(--primary-low-mid);
-      font-size: var(--font-down-1);
-      font-weight: bold;
-    }
-  }
+  // kept from upstream; not used by our Meta cards
 }
 
 .topic-thumbnails-masonry {
-  /*
-    Variables set by javascript:
-    --masonry-num-columns
-    --masonry-tallest-column
-    --masonry-grid-spacing
-    --masonry-column-width
-  */
-  position: relative;
-  height: var(--masonry-tallest-column);
+  .topic-list-body {
+    display: block;
+    column-count: 3;
+    column-gap: var(--masonry-grid-spacing);
+  }
 
   .topic-list-item {
-    /*
-      Variables set by javascript:
-      --masonry-height
-      --masonry-height-above
-      --masonry-column-index
-    */
+    break-inside: avoid;
+    margin-bottom: var(--masonry-grid-spacing);
+    height: auto;
     position: absolute;
-    height: var(--masonry-height);
     width: var(--masonry-column-width);
     left: calc(
       (var(--masonry-column-width) + var(--masonry-grid-spacing)) *
@@ -465,8 +273,8 @@
   }
 }
 
-// Card layout for grid mode only (do not affect normal Latest list).
-// Meta row uses theme stock columns: posts / views / likes (+ tags on mobile) + avatar.
+// Meta cards: cover + title + [stats][tags][avatar]
+// Stats come ONLY from .topic-thumbnails-grid__stats — never from stock columns.
 .desktop-view .list-container .topic-list.topic-thumbnails-grid,
 .topic-list.topic-thumbnails-grid {
   .topic-list-body {
@@ -478,14 +286,14 @@
     position: relative !important;
     display: grid !important;
     grid-template-areas:
-      "image image image image image"
-      "title title title title title"
-      "posts views likes tags avatar" !important;
-    grid-template-columns: auto auto auto minmax(0, 1fr) auto !important;
+      "image image image"
+      "title title title"
+      "stats tags avatar" !important;
+    grid-template-columns: auto minmax(0, 1fr) auto !important;
     grid-template-rows: auto auto auto !important;
     height: auto !important;
     min-height: 0 !important;
-    gap: 0 10px !important;
+    gap: 0 !important;
     padding: 0 !important;
     overflow: hidden;
     border-radius: 8px;
@@ -494,8 +302,6 @@
     > td,
     > .topic-list-data {
       display: none !important;
-      width: auto !important;
-      max-width: none !important;
       padding: 0 !important;
       margin: 0 !important;
       background: transparent !important;
@@ -509,35 +315,6 @@
     > td.main-link,
     > .topic-list-data.main-link {
       display: contents !important;
-    }
-
-    // Theme stock stats (flat icons) — keep these only.
-    > td.posts,
-    > td.num.posts-map,
-    > .topic-list-data.posts,
-    > .topic-list-data.posts-map {
-      display: inline-flex !important;
-      grid-area: posts !important;
-      align-items: center;
-      padding: 4px 0 10px 12px !important;
-    }
-
-    > td.views,
-    > td.num.views,
-    > .topic-list-data.views {
-      display: inline-flex !important;
-      grid-area: views !important;
-      align-items: center;
-      padding: 4px 0 10px 0 !important;
-    }
-
-    > td.likes,
-    > td.num.likes,
-    > .topic-list-data.likes {
-      display: inline-flex !important;
-      grid-area: likes !important;
-      align-items: center;
-      padding: 4px 0 10px 0 !important;
     }
   }
 
@@ -557,22 +334,21 @@
     }
   }
 
-  // Hide everything else from the stock list row.
+  // Kill every stock list column — these were the bare "0 6 0" duplicates.
   .badge-category__wrapper,
   .badge-category,
-  .num.activity,
-  td.activity,
-  .topic-list-data.activity,
+  .num,
+  .posts-map,
+  .views,
+  .likes,
   .posters,
-  td.posters,
-  .topic-list-data.posters,
-  .topic-thumbnail-likes,
-  .topic-thumbnail-blog-data,
-  .topic-thumbnails-grid__stats,
-  .pull-right,
   .activity,
   .post-activity,
-  .relative-date {
+  .relative-date,
+  .pull-right,
+  .topic-excerpt,
+  .topic-thumbnail-likes,
+  .topic-thumbnail-blog-data {
     display: none !important;
   }
 
@@ -591,49 +367,90 @@
     margin: 0 !important;
   }
 
-  .link-bottom-line {
-    grid-area: tags !important;
+  .topic-thumbnails-grid__stats {
+    grid-area: stats !important;
     display: flex !important;
     align-items: center;
-    flex-wrap: nowrap;
-    gap: 4px 8px;
-    min-width: 0;
-    max-width: 100%;
-    overflow: hidden;
-    padding: 4px 8px 10px 0 !important;
-    margin: 0 !important;
-
-    .badge-category__wrapper,
-    .badge-category,
-    a[href*="://"]:not(.discourse-tag) {
-      display: none !important;
-    }
-
-    .discourse-tags {
-      display: flex !important;
-      min-width: 0;
-      overflow: hidden;
-    }
-
-    .discourse-tag {
-      display: inline-flex !important;
-    }
-  }
-
-  .posts-map,
-  .num.posts-map,
-  .views,
-  .num.views,
-  .num.likes {
-    width: auto !important;
-    min-width: 0 !important;
-    height: auto !important;
-    margin: 0 !important;
+    align-self: center;
+    gap: 12px;
+    padding: 6px 0 10px 12px;
+    margin: 0;
+    color: var(--primary-medium);
     font-size: 13px;
     line-height: 1;
   }
 
-  // Avatar injected by topic-list-thumbnail.gjs
+  .topic-thumbnails-grid__stat {
+    display: inline-flex !important;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+
+    .d-icon {
+      display: inline-block !important;
+      width: 14px;
+      height: 14px;
+      color: var(--primary-medium);
+    }
+
+    .number {
+      display: inline !important;
+      color: var(--primary-medium);
+      font-size: 13px;
+      line-height: 1;
+    }
+  }
+
+  .link-bottom-line {
+    grid-area: tags !important;
+    display: flex !important;
+    align-items: center;
+    align-self: center;
+    flex-wrap: nowrap;
+    gap: 4px 6px;
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+    padding: 6px 8px 10px 0 !important;
+    margin: 0 !important;
+    line-height: 1;
+
+    .badge-category__wrapper,
+    .badge-category,
+    a[href*="://"]:not(.discourse-tag),
+    .badge-notification,
+    .topic-post-badges,
+    .likes,
+    .action-list {
+      display: none !important;
+    }
+
+    .discourse-tags {
+      display: inline-flex !important;
+      align-items: center;
+      gap: 4px;
+      min-width: 0;
+      overflow: hidden;
+      line-height: 1;
+    }
+
+    .discourse-tag {
+      display: inline-flex !important;
+      align-items: center;
+      gap: 3px;
+      margin: 0 !important;
+      line-height: 1;
+      vertical-align: middle;
+
+      .d-icon {
+        width: 12px;
+        height: 12px;
+        margin: 0 !important;
+      }
+    }
+  }
+
   .topic-thumbnails-grid__avatar {
     grid-area: avatar !important;
     position: static !important;
@@ -657,7 +474,7 @@
   }
 }
 
-// Desktop cards: no tags.
+// Desktop: no tags.
 .desktop-view .list-container .topic-list.topic-thumbnails-grid,
 .desktop-view .topic-list.topic-thumbnails-grid {
   .link-bottom-line {
@@ -666,18 +483,14 @@
 
   .topic-list-item {
     grid-template-areas:
-      "image image image image"
-      "title title title title"
-      "posts views likes avatar" !important;
-    grid-template-columns: auto auto auto 1fr !important;
-  }
-
-  .topic-thumbnails-grid__avatar {
-    justify-self: end;
+      "image image"
+      "title title"
+      "stats avatar" !important;
+    grid-template-columns: 1fr auto !important;
   }
 }
 
-// Hide OP covers marked with |thumbnail in the post body (still used as topic card image).
+// Hide OP covers marked with |thumbnail in the post body.
 .cooked,
 .d-editor-preview {
   img[data-thumbnail="true"],

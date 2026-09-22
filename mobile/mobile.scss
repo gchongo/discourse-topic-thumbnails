@@ -73,8 +73,7 @@
   }
 }
 
-// Compact Meta-style cards on phones.
-// Meta row: theme posts/views/likes + tags + avatar (no component stats).
+// Mobile Meta cards: cover / title / [stats][tags][avatar]
 .mobile-view .topic-list.topic-thumbnails-grid,
 .mobile-view .list-container .topic-list.topic-thumbnails-grid {
   .topic-list-body {
@@ -91,16 +90,16 @@
     position: relative !important;
     display: grid !important;
     grid-template-areas:
-      "image image image image image"
-      "title title title title title"
-      "posts views likes tags avatar" !important;
-    grid-template-columns: auto auto auto minmax(0, 1fr) auto !important;
+      "image image image"
+      "title title title"
+      "stats tags avatar" !important;
+    grid-template-columns: auto minmax(0, 1fr) auto !important;
     grid-template-rows: auto auto auto !important;
     height: auto !important;
     min-height: 0 !important;
     margin: 0 !important;
     padding: 0 !important;
-    gap: 0 8px !important;
+    gap: 0 !important;
     overflow: hidden;
     border-radius: 10px;
     border: 1px solid var(--primary-low) !important;
@@ -111,8 +110,6 @@
     > td,
     > .topic-list-data {
       display: none !important;
-      width: auto !important;
-      max-width: none !important;
       padding: 0 !important;
       margin: 0 !important;
       background: transparent !important;
@@ -126,34 +123,6 @@
     > td.main-link,
     > .topic-list-data.main-link {
       display: contents !important;
-    }
-
-    > td.posts,
-    > td.num.posts-map,
-    > .topic-list-data.posts,
-    > .topic-list-data.posts-map {
-      display: inline-flex !important;
-      grid-area: posts !important;
-      align-items: center;
-      padding: 2px 0 8px 10px !important;
-    }
-
-    > td.views,
-    > td.num.views,
-    > .topic-list-data.views {
-      display: inline-flex !important;
-      grid-area: views !important;
-      align-items: center;
-      padding: 2px 0 8px 0 !important;
-    }
-
-    > td.likes,
-    > td.num.likes,
-    > .topic-list-data.likes {
-      display: inline-flex !important;
-      grid-area: likes !important;
-      align-items: center;
-      padding: 2px 0 8px 0 !important;
     }
   }
 
@@ -202,47 +171,85 @@
     }
   }
 
+  .topic-thumbnails-grid__stats {
+    grid-area: stats !important;
+    display: flex !important;
+    align-items: center;
+    align-self: center;
+    gap: 10px;
+    padding: 4px 0 8px 10px;
+    margin: 0;
+    color: var(--primary-medium);
+    font-size: 12px;
+    line-height: 1;
+  }
+
+  .topic-thumbnails-grid__stat {
+    display: inline-flex !important;
+    align-items: center;
+    gap: 3px;
+    line-height: 1;
+
+    .d-icon {
+      display: inline-block !important;
+      width: 13px;
+      height: 13px;
+    }
+
+    .number {
+      display: inline !important;
+      line-height: 1;
+    }
+  }
+
   .link-bottom-line {
     grid-area: tags !important;
     display: flex !important;
     align-items: center;
+    align-self: center;
     flex-wrap: nowrap;
     gap: 4px 6px;
     min-width: 0;
     max-width: 100%;
     overflow: hidden;
-    padding: 2px 6px 8px 0 !important;
+    padding: 4px 6px 8px 0 !important;
     margin: 0 !important;
+    line-height: 1;
 
     .badge-category__wrapper,
     .badge-category,
-    a[href*="://"]:not(.discourse-tag) {
+    a[href*="://"]:not(.discourse-tag),
+    .badge-notification,
+    .topic-post-badges,
+    .likes,
+    .action-list {
       display: none !important;
     }
 
     .discourse-tags {
-      display: flex !important;
+      display: inline-flex !important;
+      align-items: center;
+      gap: 4px;
       min-width: 0;
       overflow: hidden;
+      line-height: 1;
     }
 
     .discourse-tag {
       display: inline-flex !important;
+      align-items: center;
+      gap: 3px;
+      margin: 0 !important;
       font-size: 12px;
-    }
-  }
+      line-height: 1;
+      vertical-align: middle;
 
-  .posts-map,
-  .num.posts-map,
-  .views,
-  .num.views,
-  .num.likes {
-    width: auto !important;
-    min-width: 0 !important;
-    height: auto !important;
-    margin: 0 !important;
-    font-size: 12px;
-    line-height: 1;
+      .d-icon {
+        width: 12px;
+        height: 12px;
+        margin: 0 !important;
+      }
+    }
   }
 
   .topic-thumbnails-grid__avatar {
@@ -267,32 +274,30 @@
     }
   }
 
-  // Kill stock / flat extras (keep posts/views/likes). No component stats.
   .badge-category__wrapper,
   .badge-category,
   .pull-left,
   .pull-right,
   .topic-item-stats,
-  .topic-item-stats__category-tags,
-  .topic-item-stats .activity,
-  .topic-item-metadata > .pull-right,
-  .num.activity,
+  .num,
+  .posts-map,
+  .views,
+  .likes,
   .posters,
-  td.posters,
-  td.activity,
-  .topic-list-data.posters,
-  .topic-list-data.activity,
   .activity,
   .post-activity,
   .relative-date,
   .topic-excerpt,
   .topic-thumbnail-likes,
   .topic-thumbnail-blog-data,
-  .topic-thumbnails-grid__stats,
   .badge-notification,
   .unread-indicator,
   .topic-post-badges {
     display: none !important;
+  }
+
+  .topic-thumbnails-grid__stat .number {
+    display: inline !important;
   }
 
   .topic-item-metadata,

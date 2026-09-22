@@ -159,6 +159,21 @@ export default class TopicListThumbnail extends Component {
     </div>
 
     {{#if this.topicThumbnails.displayGrid}}
+      <div class="topic-thumbnails-grid__stats">
+        <span class="topic-thumbnails-grid__stat">
+          {{dIcon "comment"}}
+          <span class="number">{{this.topic.replyCount}}</span>
+        </span>
+        <span class="topic-thumbnails-grid__stat">
+          {{dIcon "eye"}}
+          <span class="number">{{this.topic.views}}</span>
+        </span>
+        <span class="topic-thumbnails-grid__stat">
+          {{dIcon "heart"}}
+          <span class="number">{{this.topic.like_count}}</span>
+        </span>
+      </div>
+
       {{#if this.gridAvatarUrl}}
         <a
           href={{this.gridAvatarPath}}
