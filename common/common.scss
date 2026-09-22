@@ -588,11 +588,12 @@
   }
 }
 
-// Hide OP covers marked with |thumbnail in the post body.
-.cooked,
-.d-editor-preview {
-  img[data-thumbnail="true"],
-  .lightbox-wrapper:has(img[data-thumbnail="true"]) {
-    display: none !important;
-  }
+// Hide the OP cover in the post body so it is not duplicated with the card.
+// JS adds .topic-thumbnails-hidden-cover to the cover only (first image, or |thumbnail).
+.topic-thumbnails-hidden-cover,
+.cooked img[data-thumbnail="true"],
+.cooked .lightbox-wrapper:has(img[data-thumbnail="true"]),
+.d-editor-preview img[data-thumbnail="true"],
+.d-editor-preview .lightbox-wrapper:has(img[data-thumbnail="true"]) {
+  display: none !important;
 }

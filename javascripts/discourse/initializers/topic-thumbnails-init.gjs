@@ -2,6 +2,10 @@ import { readOnly } from "@ember/object/computed";
 import { service } from "@ember/service";
 import { apiInitializer } from "discourse/lib/api";
 import TopicListThumbnail from "../components/topic-list-thumbnail";
+import {
+  hideOpCoverImage,
+  shouldHideCoverInCooked,
+} from "../lib/hide-op-cover";
 
 export default apiInitializer((api) => {
   const ttService = api.container.lookup("service:topic-thumbnails");
@@ -56,6 +60,17 @@ export default apiInitializer((api) => {
       }
       return value;
     }
+  );
+
+  // Hide OP cover in the post body (first image, or |thumbnail if set).
+  api.decorateCookedElement(
+    (element, helper) => {
+      if (!shouldHideCoverInCooked(helper, element)) {
+        return;
+      }
+      hideOpCoverImage(element);
+    },
+    { id: "discourse-topic-thumbnails-hide-op-cover" }
   );
 
   const siteSettings = api.container.lookup("service:site-settings");
