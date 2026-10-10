@@ -588,6 +588,22 @@
   }
 }
 
+// Keep suggested thumbnail grid on the same column as `.boxed.onscreen-post`
+// (avatar + topic body). Shrinks with the viewport; never wider than the post.
+#suggested-topics:has(.topic-list.topic-thumbnails-grid),
+.more-topics__container:has(.topic-list.topic-thumbnails-grid),
+.more-topics__list:has(.topic-list.topic-thumbnails-grid) {
+  width: 100%;
+  max-width: min(
+    100%,
+    calc(
+      var(--topic-avatar-width) + var(--topic-body-width) +
+        (var(--topic-body-width-padding) * 2)
+    )
+  );
+  box-sizing: border-box;
+}
+
 // Suggested-topics grid is sized independently from category lists.
 #suggested-topics .topic-list.topic-thumbnails-grid,
 .more-topics__list .topic-list.topic-thumbnails-grid,
