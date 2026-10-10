@@ -588,6 +588,48 @@
   }
 }
 
+// Suggested-topics grid is sized independently from category lists.
+#suggested-topics .topic-list.topic-thumbnails-grid,
+.more-topics__list .topic-list.topic-thumbnails-grid,
+.more-topics__container .topic-list.topic-thumbnails-grid {
+  .topic-list-body {
+    grid-template-columns: repeat(
+      auto-fill,
+      minmax(#{$suggested_grid_min_width}px, 1fr)
+    ) !important;
+    column-gap: 10px !important;
+    row-gap: 10px !important;
+  }
+
+  .topic-list-thumbnail {
+    min-height: 0 !important;
+    aspect-ratio: 16 / 9 !important;
+  }
+
+  .link-top-line {
+    padding: 8px 10px 2px !important;
+    font-size: var(--font-down-1, 13px);
+  }
+
+  .topic-thumbnails-grid__stats {
+    padding: 4px 0 8px 10px;
+    font-size: 12px;
+    gap: 8px;
+  }
+
+  .topic-thumbnails-grid__avatar {
+    width: 20px;
+    height: 20px;
+    margin: 0 10px 8px 0;
+
+    .avatar,
+    img {
+      width: 20px !important;
+      height: 20px !important;
+    }
+  }
+}
+
 // Hide the OP cover in the post body so it is not duplicated with the card.
 // JS adds .topic-thumbnails-hidden-cover to the cover only (first image, or |thumbnail).
 .topic-thumbnails-hidden-cover,

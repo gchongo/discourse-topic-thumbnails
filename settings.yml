@@ -81,6 +81,13 @@ suggested_topics_mode:
     - blog-style
     - none
 
+# Card min-width for suggested-topics grid only (category list stays 250px).
+suggested_grid_min_width:
+  default: 180
+  type: integer
+  min: 120
+  max: 360
+
 enable_outside_topic_lists: false
 
 placeholder_icon:

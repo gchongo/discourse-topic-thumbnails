@@ -20,6 +20,7 @@ zh_CN:
       masonry_tags: 这些标签将使用砌体视图
       list_tags: 这些标签将使用列表视图
       suggested_topics_mode: 建议的话题应使用哪种缩略图显示模式？如果为空，将遵循 'enable outside topic lists' 设置。
+      suggested_grid_min_width: 仅用于话题页底部推荐网格的卡片最小宽度（像素）。数值越小，列数越多、封面越小。不影响分类话题列表。
       enable_outside_topic_lists: 在非话题列表页面（例如用户活动、个人消息、建议的话题）上启用缩略图
       placeholder_icon: 在没有缩略图图片的话题上显示的图标
       mobile_thumbnails: 在移动设备上启用缩略图
