@@ -1,4 +1,5 @@
 import { tracked } from "@glimmer/tracking";
+import { getOwner } from "@ember/owner";
 import { computed } from "@ember/object";
 import { dependentKeyCompat } from "@ember/object/compat";
 import Service, { service } from "@ember/service";
@@ -51,14 +52,33 @@ export default class TopicThumbnailService extends Service {
     return this.router?.currentRouteName?.match(/^docs\./);
   }
 
-  @dependentKeyCompat
-  get viewingCategoryId() {
-    return this.discovery.category?.id;
+  // Topic pages are not discovery routes, so discovery.category is empty.
+  // Read the current topic so suggested-topics can reuse the same
+  // category / tag whitelist as the category list (e.g. Tutorial → grid).
+  @computed("isTopicRoute", "router.currentURL")
+  get currentTopic() {
+    if (!this.isTopicRoute) {
+      return null;
+    }
+    return getOwner(this).lookup("controller:topic")?.model;
   }
 
-  @dependentKeyCompat
+  @computed("discovery.category.id", "currentTopic.category_id", "currentTopic.category.id")
+  get viewingCategoryId() {
+    return (
+      this.discovery.category?.id ??
+      this.currentTopic?.category_id ??
+      this.currentTopic?.category?.id
+    );
+  }
+
+  @computed("discovery.tag.name", "currentTopic.tags.[]")
   get viewingTagName() {
-    return this.discovery.tag?.name;
+    if (this.discovery.tag?.name) {
+      return this.discovery.tag.name;
+    }
+    const tags = this.currentTopic?.tags;
+    return Array.isArray(tags) && tags.length ? tags[0] : null;
   }
 
   @computed(
@@ -93,8 +113,10 @@ export default class TopicThumbnailService extends Service {
       return "grid";
     } else if (listTags.includes(this.viewingTagName)) {
       return "list";
-    } else if (this.isTopicRoute && settings.suggested_topics_mode) {
-      return settings.suggested_topics_mode;
+    } else if (this.isTopicRoute) {
+      // Suggested list follows the current topic's category/tag whitelist only.
+      // Do not apply suggested_topics_mode globally (would cover every category).
+      return "none";
     } else if (this.isTopicListRoute || settings.enable_outside_topic_lists) {
       return settings.default_thumbnail_mode;
     } else if (this.isDocsRoute) {
